@@ -1,5 +1,5 @@
 """
-version 0.8 E4:8*3
+version 0.9 E4:8*3
 
 A4 in scientific notation = 440.0 Hz
 Then C0 = 16.352 Hz
@@ -58,6 +58,7 @@ class Sounder:
             print(note)
             self.playNoteDur(note[0], note[1], note[2])
 
+    # 2
     def _readFile(self, name):
         text = ''
         with open(name,'r') as file:
@@ -113,6 +114,7 @@ class Sounder:
                     div = el[1]
                 self.playNoteDur(note,div,dur)
 
+    # 1
     def playFile(self, name):
         expr = self._readFile(name)
         print(expr, '\n\n')
@@ -121,5 +123,4 @@ class Sounder:
         self._playActs(acts)
 
 snd = Sounder()
-#snd.playFile('music')
-snd._readFile('music')
+snd.playFile('music')

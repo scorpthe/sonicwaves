@@ -1,19 +1,23 @@
 """
-version 0.9 E4:8*3
-
-A4 in scientific notation = 440.0 Hz
-Then C0 = 16.352 Hz
+Written by:
+    Ilya Bushuev @scorpthe
+Date:
+    15.03-18.03.2018
+Description:
+    Version 0.5S [splitting]:
+        file   -> string,
+        string -> commands.
 """
 
 from winsound import Beep
 
 NOTE_AMOUNT = 12
-A4 = (440.00, (12*4 + 9))
+A4 = (440.00, (12*4 + 9)) # A4 in scientific notation = 440.0 Hz
 NOTE_ID = {'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4,
            'F':5, 'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9,
            'A#':10, 'Hb':10, 'H':11}
 MS_IN_MIN = 60 * 1000 # SecInMin * MsInSec
-BPM = 120 #beats (quarter note) per minute
+BPM = 120 # beats (quarter note) per minute
 QTR = 4
 
 class Sounder:
@@ -32,7 +36,7 @@ class Sounder:
             octave = int(name[-1])
             note = NOTE_ID[name[:-1]]
             res = NOTE_AMOUNT*octave + note
-        except Exception: #KeyError, ValueError, IndexError...
+        except Exception: # KeyError, ValueError, IndexError...
             res = False
         return res
 
@@ -58,12 +62,10 @@ class Sounder:
             print(note)
             self.playNoteDur(note[0], note[1], note[2])
 
-    # 2
     def _readFile(self, name):
         text = ''
         with open(name,'r') as file:
             text = file.read()
-        print(text)
         text = text.replace(' ','')
         text = text.replace('\n',',')
         expr = text.split(',')
@@ -114,12 +116,9 @@ class Sounder:
                     div = el[1]
                 self.playNoteDur(note,div,dur)
 
-    # 1
     def playFile(self, name):
         expr = self._readFile(name)
-        print(expr, '\n\n')
         acts = self._defActs(expr)
-        print(acts, '\n\n')
         self._playActs(acts)
 
 snd = Sounder()

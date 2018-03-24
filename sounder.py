@@ -2,11 +2,10 @@
 Written by:
     Ilya Bushuev @scorpthe
 Date:
-    15.03-18.03.2018
+    22.03.2018
 Description:
-    Version 0.5S [splitting]:
-        file   -> string,
-        string -> commands.
+    Version 0.3R [regular]:
+        riffs -> play [WIP].
 """
 
 from winsound import Beep

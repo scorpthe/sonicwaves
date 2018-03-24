@@ -113,5 +113,3 @@ def parseFileToRiffs(name):
         print(name)
         print(value,'\n')
     return riffs
-
-#parseFile('music')

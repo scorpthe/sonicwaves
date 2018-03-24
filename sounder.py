@@ -9,6 +9,7 @@ Description:
 """
 
 from winsound import Beep
+from re_parser import parseFileToRiffs as parse
 
 NOTE_AMOUNT = 12
 A4 = (440.00, (12*4 + 9)) # A4 in scientific notation = 440.0 Hz
@@ -56,46 +57,8 @@ class Sounder:
         ms = int(self.msWhole * div)
         Beep(round(hz), ms)
 
-    def playMusic(self, music):
-        for note in music:
-            print(note)
-            self.playNoteDur(note[0], note[1], note[2])
-
-    def _readFile(self, name):
-        text = ''
-        with open(name,'r') as file:
-            text = file.read()
-        text = text.replace(' ','')
-        text = text.replace('\n',',')
-        expr = text.split(',')
-        for el in expr:
-            if el == '':
-                del el
-        return expr
-
-    def _defActs(self, expr=[]):
-        acts = []
-        for el in expr:
-            if el == '':
-                pass
-            elif el.find('bpm=') == 0:
-                split = el.split('=')
-                acts.append(tuple([split[0], int(split[1])]))
-            elif el.find('div=') == 0:
-                split = el.split('=')
-                acts.append(tuple([split[0], int(split[1])]))
-            else:
-                el = el.replace('*',' ')
-                el = el.replace(':',' ')
-                split = el.split(' ')
-                for i in range(len(split)):
-                    if i > 0:
-                        split[i] = int(split[i])
-                acts.append(tuple(split))
-        return acts
-
-    def _playActs(self, acts=[]):
-        for el in acts:
+    def playCommands(self, commands):
+        for el in commands:
             if el[0] == 'bpm':
                 bpm = el[1]
                 self.msWhole = self.defMsWhole(bpm)
@@ -104,21 +67,26 @@ class Sounder:
                 div = el[1]
                 self.stDiv = self.defStDiv(div)
                 print('div set to', div)
-            else:
-                div = self.stDiv
-                dur = 1
-                note = el[0]
-                if len(el) == 3:
-                    div = el[1]
-                    dur = el[2]
-                elif len(el) == 2:
-                    div = el[1]
-                self.playNoteDur(note,div,dur)
+            elif el[0] == 'note':
+                snd = el[1]['snd']
+                val = el[1]['val'] if el[1]['val'] else self.stDiv
+                dur = el[1]['dur'] if el[1]['dur'] else 1
+                self.playNoteDur(snd,val,dur)
 
-    def playFile(self, name):
-        expr = self._readFile(name)
-        acts = self._defActs(expr)
-        self._playActs(acts)
+    def playRiffs(self, riffs, name='all'):
+        if name == 'all':
+            for name, commands in riffs.items():
+                print()
+                print(name)
+                self.playCommands(commands)
+        else:
+            print(name)
+            try:
+                commands = riffs[name]
+                self.playCommands(commands)
+            except KeyError as e:
+                print('Error:',e)
 
 snd = Sounder()
-snd.playFile('music')
+riffs = parse('music')
+snd.playRiffs(riffs, 'Brave Knights')

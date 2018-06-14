@@ -1,21 +1,8 @@
-    @ this line is comment; it won't be read              
-
-"Name with spaces"	:
-
-bpm = 60
- D4,D4 ,D4   , D4,,,,,,
-div = 8
-D4, D4, D4, D4
-div = 16
-D4, D4, D4, D4, D4, D4, D4, D4.
-
- @ second comment
-
-"One line": bpm = 70, div = 4, A4:16*4, A4:8, A4*4, A4. @ comment three
+@Music
 
 "Brave Knights":
-bpm = 60
-E4:8*3, E4:16, F#4:16, G4:8, F#4:16, E4:16, D4:8, E4:16, F#4:16 @ any comment
-E4:8*3, D4:16, E4:16, D4:8*3, H3:16, D4:16, @ comment too  
+tempo = 100 @set tempo
+E4:8*3, E4:16, F#4:16, G4:8, F#4:16, E4:16, D4:8, E4:16, F#4:16 @first line
+E4:8*3, D4:16, E4:16, D4:8*3, H3:16, D4:16, @second line
 E4:8*3, E4:16, F#4:16, G4:8, F#4:16, G4:16, A4:8, G4:16, F#4:16
-E4:8*3, D4:16, E4:16, D4:8*3, H3:16, D4:16, E4:8. @ commented
+E4:8*3, D4:16, E4:16, D4:8*3, H3:16, D4:16, E4:8. @end

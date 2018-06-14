@@ -1,0 +1,18 @@
+@Testing
+@v1803.22.54
+@Bushuev Ilya
+
+    @ this line is comment; it won't be read              
+
+"Name with spaces"	:
+
+tempo = 60
+ D4,D4 ,D4   , D4,,,,,,
+value = 8
+D4, D4, D4, D4 @any comment
+value = 16
+D4, D4, D4, D4, D4, D4, D4, D4.
+
+ @ second comment
+
+"One line": tempo = 70, value = 4, A4:16*4, A4:8, A4*4, A4. @ comment three

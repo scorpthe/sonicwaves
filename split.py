@@ -1,10 +1,10 @@
 """
-Split (as part of Sonic Waves)
+Split (part of Sonic Waves)
 
 started 22.03.18
 by Bushuev Ilya
 
-updated 25.06.18
+updated 03.07.18
 
 function: file => splitted
 """
@@ -16,10 +16,8 @@ AG2 = 2
 AG3 = 3
 
 COMMENT = r'@.*[\n$]?'
-
 BEG_TEXT = r'^'
 END_TEXT = r'$'
-
 NAME = r'"(.*)"'
 BEG_SEQ = r':'
 COMMAND = r'([^\.]*)'
@@ -32,8 +30,7 @@ PHRASE = (BEG_TEXT + MB_SPACES + NAME + MB_TAB_SP +
 
 TEMPO = BEG_TEXT + r'(tempo)=(\d{1,3})' + END_TEXT
 VALUE = BEG_TEXT + r'(value)=(\d{1,2})' + END_TEXT
-
-SOUND = r'([CDEFGAH][#b]?[2-9])'
+SOUND = r'([CDEFGAH][#b]?[0-9])'
 MB_VAL = r'(:\d{1,2})?'
 MB_DUR = r'(\*\d)?'
 NOTE = BEG_TEXT + SOUND + MB_VAL + MB_DUR + END_TEXT

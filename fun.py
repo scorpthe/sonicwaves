@@ -1,12 +1,10 @@
 """
-Terminal-player (as part of Sonic Waves)
+Having fun with Sonic Waves!
 
 started 18.06.18
 by Bushuev Ilya
 
-updated 25.06.18
-
-function: terminal commands => sound
+updated 03.07.18
 """
 
 from sonic import Sonic
@@ -23,10 +21,11 @@ def test1():
     length = TIMES * NOTE_LEN * len(riff)
     print('Synth test: time {} minutes {} seconds'.format(round(length // MIN), 
                                                           round(length % MIN)))
-    sg = Sonic(echo=True)
+    sn = Sonic(echo=True)
+    sn.settings(.1, 'q w e r')
     for i in range(TIMES):
         for note in riff:
-            sg.sound(Note.name_to_hz(note), NOTE_LEN, wave='trinagle')
+            sn.get_sound(Note.name_to_hz(note), NOTE_LEN)
 
 def test2():
     chord = ['G3','H3','D4','F4']
@@ -34,7 +33,7 @@ def test2():
     sg = Sonic(bit=32, echo=True)
     chord = [Note.name_to_hz(note) for note in chord]
     print(chord)
-    sg.sound(chord, duration=2, wave='square')
+    sg.sound(chord, duration=2, wave='saw')
     
 def test3():
     sequence = ['E4', 'F#4', 'E4', 'D4', 'E4', 'G4', 
@@ -43,14 +42,14 @@ def test3():
     for i in range(8*8):
         for note in sequence:
             sonic.sound(frequencies=Note.name_to_hz(note), 
-            duration=.09, wave='square')
+            duration=.09, wave='saw')
             
 def test4():
     sonic = Sonic(echo=True)
     for i in range(1000000):
         num=round(random()*36+12*4)
         sonic.sound(frequencies=Note.num_to_hz(num),
-                    duration=.05, wave='square')
+                    duration=.05, wave='trinagle')
         
 def test5():
     sonic = Sonic(echo=True)
@@ -87,6 +86,6 @@ def test8():
         num=round(sin1)
         sonic.sound(frequencies=Note.num_to_hz(num),
                     duration=.05, wave='square')
-                    
+   
 if __name__ == '__main__':
     test1()

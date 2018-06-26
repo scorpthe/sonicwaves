@@ -1,12 +1,12 @@
 """
-File-player (as part of Sonic Waves)
+Player (part of Sonic Waves)
 
 started 22.03.18
 by Bushuev Ilya
 
-updated 25.06.18
+updated 03.07.18
 
-function: file (splitted) => sound
+function: splitted file => notes
 """
 
 from sonic import Sonic

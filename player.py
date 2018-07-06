@@ -4,86 +4,153 @@ Player (part of Sonic Waves)
 started 22.03.18
 by Bushuev Ilya
 
-updated 03.07.18
+updated 06.07.18
 
 function: splitted file => notes
 """
 
 from sonic import Sonic
 from notation import Note
-from split import split_file as split
+from split import split
 
 MIN = 60
 BPM = 120
-QUARTER_NOTE = 4
-
+QRT = 4
+VOL = 100
+WAV = 'e'
 
 class Player:
-    def set_default_tempo(self, bpm):
-        self.whole_note_sec = MIN / bpm * QUARTER_NOTE
+    def set_tempo(self, bpm):
+        self.whole_ms = MIN / bpm * QRT
+    
+    def set_duration(self, duration):
+        self.duration = duration
+    
+    def set_volume(self, volume):
+        self.volume = volume/1000
+    
+    def set_waves(self, waves):
+        self.waves = waves
+    
+    def __init__(self,echo=True,now=False):
+        self.echo = echo
+        self.now = now
+        self.sonic = Sonic(echo=self.echo)
+        self.set_tempo(BPM)
+        self.set_duration(QRT)
+        self.set_volume(VOL)
+        self.set_waves(WAV)
+        self.rep = []
 
-    def _set_default_note_value(self, val):
-        self.default_note_value = val
-
-    def __init__(self):
-        self.set_default_tempo(BPM)
-        self._set_default_note_value(QUARTER_NOTE)
-        self.phrases = None
-        self.sg = Sonic(echo=True)
-
-    def play_note_sec(self, name, sec):
-        hz = Note.name_to_hz(name)
+    def notes(self, names, duration, length, volume, waves):
+        if self.echo: print('Player: info -','note:',names,
+                            'dur:',duration,'len:',length,
+                            'vol:',volume,'wav:',waves)
+        hz = [Note.name_to_hz(name) for name in names]
         if hz:
-            self.sg.sound(hz, sec)
+            division = 1 * length / duration
+            sec = float(self.whole_ms * division)
+            self.sonic.waves(hz, sec, volume, waves, self.now)
 
-    def play_note(self, name, divisor, dividend=1):
-        hz = Note.name_to_hz(name)
-        if hz:
-            division = dividend / divisor
-            sec = float(self.whole_note_sec * division)
-            self.sg.sound(hz, sec)
+    def durlen(self, string):
+        try:
+            duration = self.duration
+            length = 1
+            if string != '':
+                if string[0] == '/':
+                    duration *= int(string[1:])
+                elif string[0] == '*':
+                    length *= int(string[1:])
+                elif string[0] == ':':
+                    duration = int(string[1:])
+                else:
+                    raise PlayError(string)
+            res = (duration, length)
+        except PlayError as pe:
+            print('Player: error in expression <{0}>'.format(pe.args[0]))
+            res = 0
+        return res
 
-    def play_command_list(self, command_list):
-        for el in command_list:
-            if el[0] == 'tempo':
-                tempo = el[1]
-                self.set_default_tempo(tempo)
-                print('default tempo set to', tempo)
-            elif el[0] == 'value':
-                value = el[1]
-                self._set_default_note_value(value)
-                print('default note value set to', value)
-            elif el[0] == 'note':
-                sound = el[1]['snd']
-                value = el[1]['val'] if el[1]['val'] else self.default_note_value
-                duration = el[1]['dur'] if el[1]['dur'] else 1
-                self.play_note(sound, value, duration)
+    def read(self, com):
+        i = 0
+        while i < len(com):
+            if com[i][0] == 'tempo':
+                tempo = com[i][1]
+                self.set_tempo(tempo)
+                if self.echo: print('Player: tempo:', tempo)
+            elif com[i][0] == 'value':
+                duration = com[i][1]
+                self.set_duration(duration)
+                if self.echo: print('Player: value:', duration)
+            elif com[i][0] == 'volume':
+                volume = com[i][1]
+                self.set_volume(volume)
+                if self.echo: print('Player: volume:', volume)
+            elif com[i][0] == 'waves':
+                waves = com[i][1]
+                self.set_waves(waves)
+                if self.echo: print('Player: waves:', waves)
+            elif com[i][0] == 'for':
+                self.rep.append([1,i])
+                if self.echo: print('Player: start loop')
+            elif com[i][0] == 'rep':
+                if self.rep[-1][0] == com[i][1]:
+                    if self.echo: 
+                        print('Player: looped {0} times'.format(self.rep[-1][0]))
+                    if self.echo: 
+                        print('Player: end loop')
+                    self.rep.pop()
+                else:
+                    i = self.rep[-1][1]
+                    if self.echo: 
+                        print('Player: looped {0} times'.format(self.rep[-1][0]))
+                    self.rep[-1][0]+=1
+            elif com[i][0] == 'note':
+                sound = [com[i][1]]
+                duration, length = self.durlen(com[i][2])
+                volume, waves = self.volume, self.waves
+                self.notes(sound, duration, length, volume, waves)
+            elif com[i][0] == 'chord':
+                sounds = list(com[i][1])
+                duration, length = self.durlen(com[i][2])
+                volume, waves = self.volume, self.waves
+                self.notes(sounds, duration, length, volume, waves)
+            elif com[i][0] == 'pause':
+                sound = ['C0']
+                duration, length = self.durlen(com[i][1])
+                volume, waves = 0, self.waves
+                self.notes(sound, duration, length, volume, waves)
+            i+=1
+        self.sonic.play()
 
     def load(self, file_name):
-        self.phrases = split(file_name)
+        text = ''
+        with open(file_name, 'r') as f:
+            text = f.read()
+        self.commands = split(text,echo=self.echo)
 
-    def play(self, phrase_name='all'):
-        if self.phrases:
-            if phrase_name == 'all':
-                for name, commands in self.phrases.items():
-                    # try_echo(name)
-                    self.play_command_list(commands)
+    def go(self, mark=['all']):
+        if self.commands:
+            if mark == ['all']:
+                self.read(self.commands)
             else:
-                # try_echo(riff_name)
-                try:
-                    commands = self.phrases[phrase_name]
-                    self.play_command_list(commands)
-                except KeyError:
-                    print('Sounder error! Unknown riff "{}"'.format(phrase_name))
+                com = self.commands
+                marks = []
+                for i in range(len(com)):
+                    if com[i][0] == 'mark':
+                        marks.append([com[i][1],i])
+                take = []
+                for i in range(len(marks)):
+                    if marks[i][0] in mark:
+                        start = marks[i][1]
+                        end = marks[i+1][1] if i!=len(marks)-1 else len(com)
+                        take+=com[start:end]
+                self.read(take)
 
-    def play_now(self, file_name, phrase_name='all'):
-        self.load(file_name)
-        self.play(phrase_name)
-
-
-def test(file_name, phrase_name='all'):
-    player_ = Player()
-    player_.play_now(file_name, phrase_name)
+def _test(name, mark='all'):
+    player = Player(echo=True)
+    player.load(name)
+    player.go(mark)
 
 if __name__ == '__main__':
-    test('music','Brave Knights')
+    _test('music',['Tune'])

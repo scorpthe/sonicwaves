@@ -4,7 +4,7 @@ sonic +
 player +
 split +    
 music +
-fun +-
+fun +
 
 FUTURE UPDATES:
     (add args)

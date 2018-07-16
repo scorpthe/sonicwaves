@@ -4,7 +4,7 @@ Split (part of Sonic Waves)
 started 22.03.18
 by Bushuev Ilya
 
-updated 06.07.18
+updated 17.07.18
 
 function: file => splitted
 """

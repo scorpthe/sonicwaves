@@ -4,8 +4,7 @@ Notation (part of Sonic Waves)
 started 22.03.18
 by Bushuev Ilya
 
-updated 11.07.18:
-    unlimited alteration signs
+updated 17.07.18
 
 function: 
     note => hz
@@ -64,20 +63,3 @@ def __test():
 
 if __name__ == '__main__':
     __test()
-    
-    
-"""
-major = [2,2,1,2,2,2,1]
-
-def steps(ton):
-    s = 0
-    res = []
-    for el in ton:
-        s += el
-        res.append(s)
-    return res
-    
-smajor = steps(major)
-print(major)
-print(minor)
-"""

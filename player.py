@@ -4,7 +4,7 @@ Player (part of Sonic Waves)
 started 22.03.18
 by Bushuev Ilya
 
-updated 06.07.18
+updated 17.07.18
 
 function: splitted file => notes
 """
@@ -153,4 +153,4 @@ def _test(name, mark='all'):
     player.go(mark)
 
 if __name__ == '__main__':
-    _test('music',['Tune'])
+    _test('music',['August'])

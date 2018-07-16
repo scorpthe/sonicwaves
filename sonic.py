@@ -4,7 +4,7 @@ Sonic (part of Sonic Waves)
 started 11.06.18
 by Bushuev Ilya
 
-updated 06.07.18
+updated 17.07.18
 
 function: hz => sound
 """
@@ -134,7 +134,7 @@ class Sonic:
 
 def __test():
     sonic = Sonic(echo=True)
-    sonic.waves(frequncies=[440,220,880],waves='qwer',duration=3)
+    sonic.waves(frequencies=[440,220,880],waves='qwer',duration=3)
     sonic.play()
 
 if __name__ == '__main__':
